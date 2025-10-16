@@ -42,13 +42,13 @@ let scoreInterval = setInterval(function() {
 }, 1000);
 
 
-function resetScore() {
-  score = 0;
-  document.getElementById("score").innerText = "Score: " + score;
-}
+// function resetScore() {
+//   score = 0;
+//   document.getElementById("score").innerText = "Score: " + score;
+// }
 
-document.addEventListener("keydown", function(event) {
-  if (event.key === "Enter") { 
-    resetScore();
-  }
-}); 
+// document.addEventListener("keydown", function(event) {
+//   if (event.key === "Enter") { 
+//     resetScore();
+//   }
+// }); 

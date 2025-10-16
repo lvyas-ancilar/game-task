@@ -24,7 +24,7 @@ let isAlive = setInterval(function () {
   console.log(cactusLeft)
 
   
-  if (cactusLeft < 50 && cactusLeft > 0 && dinoTop >= 150) {
+  if (cactusLeft < 50 && cactusLeft > 0 && dinoTop >= 140) {
    
     alert("Game Over!");
   }
@@ -33,3 +33,22 @@ let isAlive = setInterval(function () {
 document.addEventListener("keydown", function (event) {
   jump();
 });
+
+
+let score = 0;
+let scoreInterval = setInterval(function() {
+  score++;
+  document.getElementById("score").innerText = "Score: " + score;
+}, 1000);
+
+
+function resetScore() {
+  score = 0;
+  document.getElementById("score").innerText = "Score: " + score;
+}
+
+document.addEventListener("keydown", function(event) {
+  if (event.key === "Enter") { 
+    resetScore();
+  }
+}); 

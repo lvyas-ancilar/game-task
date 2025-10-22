@@ -63,7 +63,7 @@ var count = 0;
 function jump(){
     character.style.top = "110px";
     setTimeout(function(){
-        character.style.top = "170px"
+        character.style.top = "170px"   
     },500);
     
     count++

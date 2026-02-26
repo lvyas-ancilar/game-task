@@ -1,94 +1,121 @@
-// const dino = document.getElementById("dino");
-// const cactus = document.getElementById("cactus");
+// script.js
+// Dino Game implementation
 
-// function jump() {
-//   if (dino.classList != "jump") {
-//     dino.classList.add("jump");
+// Get canvas and context
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
 
-//     setTimeout(function () {
-//       dino.classList.remove("jump");
-//     }, 3000);
-//   }
-// }
-
-// let isAlive = setInterval(function () {
-  
-//   let dinoTop = parseInt(window.getComputedStyle(dino).getPropertyValue("top"));
-//   console.log(dinoTop);   
-
-  
-//   let cactusLeft = parseInt(
-//     window.getComputedStyle(cactus).getPropertyValue("left")
-    
-//   );
-//   console.log(cactusLeft)
-
-  
-//   if (cactusLeft < 50 && cactusLeft > 0 && dinoTop >= 140) {
-   
-//     alert("Game Over!");
-//   }
-// }, 10);
-
-// document.addEventListener("keydown", function (event) {
-//   jump();
-// });
-
-
-// let score = 0;
-// let scoreInterval = setInterval(function() {
-//   score++;
-//   document.getElementById("score").innerText = "Score: " + score;
-// }, 1000);
-
-
-// // function resetScore() {
-// //   score = 0;
-// //   document.getElementById("score").innerText = "Score: " + score;
-// // }
-
-// // document.addEventListener("keydown", function(event) {
-// //   
-// // }); 
-var character = document.getElementById("character");
-var result = document.getElementById("result");
-var game = document.getElementById("game");
-var score = document.getElementById("score");
-
-
-var highScore = localStorage.getItem("highScore") || 0;
-var count = 0;
-
-
-function jump(){
-    character.style.top = "110px";
-    setTimeout(function(){
-        character.style.top = "170px"   
-    },500);
-    
-    count++
-
-    if(count > highScore){
-        highScore = count
-        localStorage.setItem("highScore", highScore)
-    }
-    document.getElementById("highScore").innerHTML = `highScore is  : ${highScore}`
+// Dino properties
+const dino = {
+  x: 50,
+  y: 150,
+  width: 40,
+  height: 40,
+  dy: 0,
+  gravity: 0.6,
+  jumpStrength: -12,
+  isJumping: false,
 };
 
-window.addEventListener("keydown", jump);
+// Cactus properties
+const cactus = {
+  x: 300,
+  y: 160,
+  width: 20,
+  height: 40,
+  speed: 6,
+};
 
-var block = document.getElementById("block");
+let score = 0;
 
-setInterval(function gameOver(){
-    var blockleft = parseInt(window.getComputedStyle(block).getPropertyValue("left"));
-    var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
-    if((blockleft < 50) && (characterTop > 120)){
-        result.style.display = "block";
-        game.style.display = "none";
-        score.innerHTML = `Score is : ${count}`;
+// ----- Low Score handling -----
+let lowScore = null;
+const storedLow = localStorage.getItem('lowScore');
+if (storedLow !== null) {
+  lowScore = parseInt(storedLow, 10);
+}
+// ------------------------------
 
+let gameOver = false;
+
+function resetGame() {
+  dino.y = 150;
+  dino.dy = 0;
+  dino.isJumping = false;
+  cactus.x = 300;
+  score = 0;
+  gameOver = false;
+  // lowScore persists across games – no reset needed
+}
+
+function update() {
+  if (gameOver) return;
+
+  // Dino physics
+  dino.dy += dino.gravity;
+  dino.y += dino.dy;
+  if (dino.y > 150) {
+    dino.y = 150;
+    dino.dy = 0;
+    dino.isJumping = false;
+  }
+
+  // Cactus movement
+  cactus.x -= cactus.speed;
+  if (cactus.x < -cactus.width) {
+    cactus.x = canvas.width + Math.random() * 100;
+    score++;
+  }
+
+  // Collision detection
+  if (
+    dino.x < cactus.x + cactus.width &&
+    dino.x + dino.width > cactus.x &&
+    dino.y < cactus.y + cactus.height &&
+    dino.y + dino.height > cactus.y
+  ) {
+    gameOver = true;
+
+    // ----- Update low score if this run is lower -----
+    if (lowScore === null || score < lowScore) {
+      lowScore = score;
+      localStorage.setItem('lowScore', lowScore);
     }
-},10);
+    // -------------------------------------------------
+  }
 
+  draw();
+  requestAnimationFrame(update);
+}
 
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  // Draw dino
+  ctx.fillStyle = 'green';
+  ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
+
+  // Draw cactus
+  ctx.fillStyle = 'brown';
+  ctx.fillRect(cactus.x, cactus.y, cactus.width, cactus.height);
+
+  // Draw current score
+  ctx.fillStyle = 'black';
+  ctx.font = '20px Arial';
+  ctx.fillText('Score: ' + score, 10, 30);
+
+  // Draw low score (if available)
+  const lowScoreText = lowScore !== null ? lowScore : '-';
+  ctx.fillText('Low Score: ' + lowScoreText, 10, 55);
+}
+
+// Jump handler
+window.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' && !dino.isJumping) {
+    dino.dy = dino.jumpStrength;
+    dino.isJumping = true;
+  }
+});
+
+// Start the game
+requestAnimationFrame(update);

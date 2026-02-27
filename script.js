@@ -23,7 +23,7 @@
 //   );
 //   console.log(cactusLeft)
 
-  
+//   
 //   if (cactusLeft < 50 && cactusLeft > 0 && dinoTop >= 140) {
    
 //     alert("Game Over!");
@@ -35,6 +35,7 @@
 // });
 
 
+/* Score handling (original commented version) */
 // let score = 0;
 // let scoreInterval = setInterval(function() {
 //   score++;
@@ -50,15 +51,15 @@
 // // document.addEventListener("keydown", function(event) {
 // //   
 // // }); 
+
 var character = document.getElementById("character");
 var result = document.getElementById("result");
 var game = document.getElementById("game");
 var score = document.getElementById("score");
 
-
 var highScore = localStorage.getItem("highScore") || 0;
+var lowScore = parseInt(localStorage.getItem("lowScore")) || 0;
 var count = 0;
-
 
 function jump(){
     character.style.top = "110px";
@@ -66,14 +67,21 @@ function jump(){
         character.style.top = "170px"   
     },500);
     
-    count++
+    count++;
 
     if(count > highScore){
-        highScore = count
-        localStorage.setItem("highScore", highScore)
+        highScore = count;
+        localStorage.setItem("highScore", highScore);
     }
-    document.getElementById("highScore").innerHTML = `highScore is  : ${highScore}`
-};
+    document.getElementById("highScore").innerHTML = `highScore is  : ${highScore}`;
+
+    // Update low score after each jump if lower than stored lowScore or if lowScore is 0
+    if (lowScore === 0 || count < lowScore) {
+        lowScore = count;
+        localStorage.setItem("lowScore", lowScore);
+    }
+    document.getElementById("lowScore").innerHTML = `lowScore is : ${lowScore}`;
+}; 
 
 window.addEventListener("keydown", jump);
 
@@ -87,8 +95,20 @@ setInterval(function gameOver(){
         game.style.display = "none";
         score.innerHTML = `Score is : ${count}`;
 
+        // Reset lowScore for next game session
+        lowScore = 0;
+        localStorage.setItem("lowScore", lowScore);
+        document.getElementById("lowScore").innerHTML = `lowScore is : ${lowScore}`;
     }
 },10);
 
-
-
+function resetGame() {
+    count = 0;
+    lowScore = 0;
+    localStorage.setItem("lowScore", lowScore);
+    document.getElementById("lowScore").innerHTML = `lowScore is : ${lowScore}`;
+    document.getElementById("highScore").innerHTML = `highScore is  : ${highScore}`;
+    result.style.display = "none";
+    game.style.display = "block";
+    score.innerHTML = `Score is : ${count}`;
+}

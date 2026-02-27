@@ -16,14 +16,12 @@
 //   let dinoTop = parseInt(window.getComputedStyle(dino).getPropertyValue("top"));
 //   console.log(dinoTop);   
 
-  
 //   let cactusLeft = parseInt(
 //     window.getComputedStyle(cactus).getPropertyValue("left")
     
 //   );
 //   console.log(cactusLeft)
 
-  
 //   if (cactusLeft < 50 && cactusLeft > 0 && dinoTop >= 140) {
    
 //     alert("Game Over!");
@@ -48,8 +46,8 @@
 // // }
 
 // // document.addEventListener("keydown", function(event) {
-// //   
-// // }); 
+  
+// // });
 var character = document.getElementById("character");
 var result = document.getElementById("result");
 var game = document.getElementById("game");
@@ -58,6 +56,12 @@ var score = document.getElementById("score");
 
 var highScore = localStorage.getItem("highScore") || 0;
 var count = 0;
+
+// Low score initialization
+var lowScore = localStorage.getItem("lowScore");
+if (lowScore !== null) {
+    lowScore = parseInt(lowScore, 10);
+}
 
 
 function jump(){
@@ -87,8 +91,12 @@ setInterval(function gameOver(){
         game.style.display = "none";
         score.innerHTML = `Score is : ${count}`;
 
+        // Low score update
+        if (lowScore === null || count < lowScore) {
+            lowScore = count;
+            localStorage.setItem("lowScore", lowScore);
+        }
+        // Display low score
+        document.getElementById("lowScore").innerHTML = `Low Score : ${lowScore}`;
     }
 },10);
-
-
-

@@ -8,14 +8,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="game">
+    <button id="startBtn" onclick="startGame()">Start Game</button>
+    <div id="game" style="display:none;">
     <div id="block"></div>
     <div id="character"><img src="/assets/dragon.jpg" alt="Error Image"></div>
     </div>
-    <div id="result">
+    <div id="result" style="display:none;">
         <h1>Game Over</h1>
         <p id="score"></p>
-        <p id = "highScore"></p>
+        <p id="highScore"></p>
         <button id="btn" onclick="location.reload()">Restart</button>
     </div>
 

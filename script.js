@@ -7,7 +7,7 @@ var startBtn = document.getElementById("startBtn");
 
 var highScore = localStorage.getItem("highScore") || 0;
 var count = 0;
-var gameInterval; // will hold the collision check interval
+var gameInterval; // collision detection interval
 
 function jump() {
     character.style.top = "110px";
@@ -39,10 +39,11 @@ function startGame() {
     // Hide start button and show game area
     if (startBtn) startBtn.style.display = "none";
     if (game) game.style.display = "block";
+
     // Attach jump listener
     window.addEventListener("keydown", jump);
     // Start collision detection loop
     gameInterval = setInterval(gameOver, 10);
 }
 
-// Ensure result and game are hidden initially (handled via HTML inline styles)
+// Ensure result and game are hidden initially (handled via inline styles)
